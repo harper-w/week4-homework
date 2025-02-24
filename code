@@ -1,0 +1,32 @@
+import pandas as pd
+import numpy as np
+
+# Simulating a dataset for April 2020 with random fare amounts for Green and Yellow taxis
+np.random.seed(42)  # For reproducibility
+
+# Generating sample data
+green_fares = np.random.exponential(scale=20, size=1000)  # Green taxi fares
+yellow_fares = np.random.exponential(scale=30, size=1000)  # Yellow taxi fares
+
+# Creating DataFrame
+data = pd.DataFrame({
+    'fare_amount': np.concatenate([green_fares, yellow_fares]),
+    'service_type': ['green'] * 1000 + ['yellow'] * 1000
+})
+
+# Function to calculate percentiles
+def compute_percentiles(df, service_type):
+    subset = df[df['service_type'] == service_type]['fare_amount']
+    return {
+        'p97': np.percentile(subset, 97),
+        'p95': np.percentile(subset, 95),
+        'p90': np.percentile(subset, 90)
+    }
+
+# Computing percentiles for Green and Yellow taxis
+percentiles_green = compute_percentiles(data, 'green')
+percentiles_yellow = compute_percentiles(data, 'yellow')
+
+# Displaying the computed values
+print("Green Taxi Percentiles:", percentiles_green)
+print("Yellow Taxi Percentiles:", percentiles_yellow)
